@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration {
+public class    SecurityConfiguration {
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -33,6 +33,8 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.cors().and().csrf().disable()
+                .authorizeHttpRequests().requestMatchers("/auth/*").permitAll()
+                .and()
                 .authorizeHttpRequests().anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

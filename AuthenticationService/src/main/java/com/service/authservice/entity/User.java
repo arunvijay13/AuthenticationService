@@ -24,7 +24,7 @@ public class User {
     private Long id;
 
     @NotEmpty
-    @Column(name = "user_name")
+    @Column(name = "username")
     private String username;
 
     @NotEmpty
@@ -53,6 +53,7 @@ public class User {
     @Column(name = "block")
     private boolean isAccountNotBlocked = true;
 
+    @Column(name = "created_at")
     private LocalDate createdAt;
 
     public boolean isPasswordExpired() {

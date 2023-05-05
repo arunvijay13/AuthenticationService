@@ -19,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 
 
@@ -38,7 +40,7 @@ public class DAOUserService implements UserDetailsService {
                 new UsernameNotFoundException(SecurityMsg.USER_CREATION_FAILED));
     }
 
-    public String createAccount(UserRequest userRequest) {
+    public String createAccount(UserRequest userRequest) throws NoSuchAlgorithmException, InvalidKeySpecException {
         userRequest.setPassword(SecurityUtils.getEncryptedPassword(userRequest.getPassword()));
         if(isUsernameExist(userRequest.getUsername()))
             throw new UserAlreadyExistException(SecurityMsg.USER_ALREADY_EXIST);
@@ -47,7 +49,7 @@ public class DAOUserService implements UserDetailsService {
         return jwtUtils.generateJwtToken(user);
     }
 
-    public String validateUser(UserCredential userCredential) {
+    public String validateUser(UserCredential userCredential) throws NoSuchAlgorithmException, InvalidKeySpecException {
         Optional<User> userInfo = userRepository.findByUsername(userCredential.getUsername());
         if(userInfo.isEmpty())
             throw new UsernameNotFoundException(SecurityMsg.USER_VERIFICATION_FAILED);

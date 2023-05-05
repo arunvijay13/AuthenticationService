@@ -13,23 +13,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
 @RestController
 @RequestMapping("/auth")
-public class LoginController {
+public class UserController {
 
     @Autowired
     DAOUserService daoUserService;
 
     @PostMapping("/account")
-    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest newUser) {
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest newUser) throws NoSuchAlgorithmException, InvalidKeySpecException {
         return ResponseEntity.ok(UserResponse.builder().message(SecurityMsg.USER_CREATED_SUCCESSFULLY)
                 .JWT(daoUserService.createAccount(newUser)).build());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> verifyUser(@RequestBody @Valid UserCredential userCredential) {
-        return ResponseEntity.ok(new UserResponse(SecurityMsg.USER_VERIFIED_SUCCESSFULLY,
-                daoUserService.validateUser(userCredential)));
+    public ResponseEntity<UserResponse> verifyUser(@RequestBody @Valid UserCredential userCredential) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        return ResponseEntity.ok(UserResponse.builder().message(SecurityMsg.USER_VERIFIED_SUCCESSFULLY)
+                        .JWT(daoUserService.validateUser(userCredential)).build());
     }
 
 }
