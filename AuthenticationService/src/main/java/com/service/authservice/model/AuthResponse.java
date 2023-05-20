@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class UserResponse {
+public class AuthResponse {
     private String message;
     private String JWT;
 }

@@ -9,9 +9,17 @@ spring:
     name: authentication-service
   flyway:
     locations:
-      - classpath:/db/migration
-  config:
-    location: classpath:/properties
+      - classpath:db/migration
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 708657316965-9q83lt1cspvgvusqbqp19ir3s0jut05d.apps.googleusercontent.com
+            clientSecret: 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
+            scope:
+              - email
+              - profile
 
 server:
   port: 8085
@@ -19,6 +27,4 @@ server:
     context-path: /security
 
 
-jwt:
-  security-key: secret-key
 

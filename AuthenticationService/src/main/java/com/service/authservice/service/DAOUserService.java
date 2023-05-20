@@ -6,10 +6,9 @@ import com.service.authservice.entity.User;
 import com.service.authservice.exception.UserAlreadyExistException;
 import com.service.authservice.mapper.UserMapper;
 import com.service.authservice.model.DAOUserDetails;
-import com.service.authservice.model.UserRequest;
 import com.service.authservice.model.UserCredential;
+import com.service.authservice.model.UserRequest;
 import com.service.authservice.repository.UserRepository;
-import com.service.authservice.utils.JwtUtils;
 import com.service.authservice.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +18,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 
 
@@ -30,8 +27,6 @@ public class DAOUserService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    JwtUtils jwtUtils;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -40,16 +35,15 @@ public class DAOUserService implements UserDetailsService {
                 new UsernameNotFoundException(SecurityMsg.USER_CREATION_FAILED));
     }
 
-    public String createAccount(UserRequest userRequest) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public User createAccount(UserRequest userRequest) {
         userRequest.setPassword(SecurityUtils.getEncryptedPassword(userRequest.getPassword()));
         if(isUsernameExist(userRequest.getUsername()))
             throw new UserAlreadyExistException(SecurityMsg.USER_ALREADY_EXIST);
         User user = UserMapper.getUser(userRequest);
-        userRepository.save(user);
-        return jwtUtils.generateJwtToken(user);
+        return userRepository.save(user);
     }
 
-    public String validateUser(UserCredential userCredential) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public User validateUser(UserCredential userCredential) {
         Optional<User> userInfo = userRepository.findByUsername(userCredential.getUsername());
         if(userInfo.isEmpty())
             throw new UsernameNotFoundException(SecurityMsg.USER_VERIFICATION_FAILED);
@@ -57,7 +51,7 @@ public class DAOUserService implements UserDetailsService {
         boolean isValid = SecurityUtils.isValidPassword(userCredential.getPassword(), user.getPassword());
         if(!isValid)
             throw new BadCredentialsException(SecurityMsg.BAD_CREDENTIAL);
-        return jwtUtils.generateJwtToken(user);
+        return user;
     }
 
     public boolean isUsernameExist(String username) {

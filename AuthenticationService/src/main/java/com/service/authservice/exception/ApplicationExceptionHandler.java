@@ -36,7 +36,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorResponse> userExceptionHandler(UsernameNotFoundException cause) {
-        errorResponse.setMessage(cause.getClass().getName());
+        errorResponse.setMessage(cause.getClass().getSimpleName());
         errorResponse.setDescription(cause.getMessage());
         errorResponse.setStatus(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -44,7 +44,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(UserAlreadyExistException.class)
     public ResponseEntity<ErrorResponse> userExceptionHandler(UserAlreadyExistException cause) {
-        errorResponse.setMessage(cause.getClass().getName());
+        errorResponse.setMessage(cause.getClass().getSimpleName());
         errorResponse.setDescription(cause.getMessage());
         errorResponse.setStatus(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -52,7 +52,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> userExceptionHandler(BadCredentialsException cause) {
-        errorResponse.setMessage(cause.getClass().getName());
+        errorResponse.setMessage(cause.getClass().getSimpleName());
         errorResponse.setDescription(cause.getMessage());
         errorResponse.setStatus(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

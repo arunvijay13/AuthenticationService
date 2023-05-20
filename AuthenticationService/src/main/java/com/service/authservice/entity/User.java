@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -54,9 +54,9 @@ public class User {
     private boolean isAccountNotBlocked = true;
 
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     public boolean isPasswordExpired() {
-        return createdAt.isAfter(LocalDate.now());
+        return createdAt.isAfter(LocalDateTime.now());
     }
 }
