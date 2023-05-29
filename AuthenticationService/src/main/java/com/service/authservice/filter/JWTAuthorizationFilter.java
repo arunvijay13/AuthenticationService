@@ -1,7 +1,6 @@
 package com.service.authservice.filter;
 
 import com.service.authservice.constant.SecurityConstant;
-import com.service.authservice.constant.SecurityMsg;
 import com.service.authservice.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,9 +28,10 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             if(jwtUtils.validateToken(token)) {
                 filterChain.doFilter(request, response);
             } else {
-                response.sendError(HttpStatus.UNAUTHORIZED.value(), SecurityMsg.INVALID_TOKEN);
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), SecurityConstant.INVALID_TOKEN);
             }
+        } else {
+            filterChain.doFilter(request, response);
         }
-        filterChain.doFilter(request, response);
     }
 }

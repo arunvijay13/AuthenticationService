@@ -1,5 +1,21 @@
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: smschatbox@gmail.com
+    password: vijuxmsugpzdbixy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+          starttls:
+            enable: true
+  thymeleaf:
+    prefix: classpath:templates/
   datasource:
     url: jdbc:mysql://localhost:3306/securitydb?allowPublicKeyRetrieval=true&useSSL=false
     username: root
@@ -20,11 +36,22 @@ spring:
             scope:
               - email
               - profile
+  exclude:
+    url:
+      path: api-config/exclude.mapping.json
+  pem-key:
+    private: keys/private_key.pem
+    public: keys/public_key.pem
 
 server:
   port: 8085
   servlet:
     context-path: /security
 
+rabbitmq:
+  mail:
+    queue: mail-queue
+    exchange: mail-exchange
+    routingkey: user-key
 
 

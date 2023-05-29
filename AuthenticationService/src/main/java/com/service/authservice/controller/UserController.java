@@ -1,6 +1,6 @@
 package com.service.authservice.controller;
 
-import com.service.authservice.constant.SecurityMsg;
+import com.service.authservice.constant.SecurityConstant;
 import com.service.authservice.model.AuthResponse;
 import com.service.authservice.model.UserCredential;
 import com.service.authservice.model.UserRequest;
@@ -24,15 +24,15 @@ public class UserController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @PostMapping("/account")
+    @PostMapping("/signup")
     public ResponseEntity<AuthResponse> createUser(@RequestBody @Valid UserRequest newUser) {
-        return ResponseEntity.ok(AuthResponse.builder().message(SecurityMsg.USER_CREATED_SUCCESSFULLY)
+        return ResponseEntity.ok(AuthResponse.builder().message(SecurityConstant.USER_CREATED_SUCCESSFULLY)
                 .JWT(jwtUtils.generateJwtToken(daoUserService.createAccount(newUser))).build());
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> verifyUser(@RequestBody @Valid UserCredential userCredential) {
-        return ResponseEntity.ok(AuthResponse.builder().message(SecurityMsg.USER_VERIFIED_SUCCESSFULLY)
+        return ResponseEntity.ok(AuthResponse.builder().message(SecurityConstant.USER_VERIFIED_SUCCESSFULLY)
                         .JWT(jwtUtils.generateJwtToken(daoUserService.validateUser(userCredential))).build());
     }
 }

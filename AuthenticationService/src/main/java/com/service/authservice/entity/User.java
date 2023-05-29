@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "users")
 @Builder
+@ToString
 public class User {
 
     @Id
@@ -45,13 +46,13 @@ public class User {
     private String role = UserRole.ROLE_ADMIN.toString();
 
     @Column(name = "active")
-    private boolean isActive = true;
+    private boolean isActive;
 
     @Column(name = "expiry")
-    private boolean isAccountNotExpired = true;
+    private boolean isAccountNotExpired;
 
     @Column(name = "block")
-    private boolean isAccountNotBlocked = true;
+    private boolean isAccountNotBlocked;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

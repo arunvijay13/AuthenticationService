@@ -16,6 +16,7 @@ public class CustomerController {
         HashMap<String, String> map = new HashMap<>();
         map.put("user", "arun");
         map.put("age","23");
+        System.out.println(map);
         return map;
     }
 }

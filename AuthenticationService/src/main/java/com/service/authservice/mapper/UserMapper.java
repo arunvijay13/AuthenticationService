@@ -12,6 +12,8 @@ public class UserMapper {
                 .email(userRequest.getEmail()).phoneNumber(userRequest.getPhoneNumber())
                 .role(UserRole.ROLE_ADMIN.name())
                 .isActive(true)
+                .isAccountNotExpired(true)
+                .isAccountNotBlocked(true)
                 .createdAt(LocalDateTime.now()).build();
     }
 }
