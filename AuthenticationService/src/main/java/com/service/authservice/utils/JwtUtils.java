@@ -44,7 +44,7 @@ public class JwtUtils {
     public String generateJwtToken(User user) {
         try {
             Date issueDate = Date.from(Instant.now());
-            Date expiryDate = Date.from(Instant.now().plus(1L, ChronoUnit.MINUTES));
+            Date expiryDate = Date.from(Instant.now().plus(1L, ChronoUnit.HOURS));
             return Jwts.builder()
                     .setClaims(getClaims(user))
                     .setSubject(user.getUsername())
@@ -61,9 +61,7 @@ public class JwtUtils {
 
     public boolean validateToken(String token) {
         try {
-            Claims claims = Jwts.parserBuilder()
-                            .setSigningKey(getPublicKey())
-                            .build().parseClaimsJws(token).getBody();
+            Claims claims = extractClaims(token);
             String username = claims.getSubject();
             if(username == null)
                 return false;
@@ -76,7 +74,7 @@ public class JwtUtils {
     }
 
     private boolean isValidUser(User user) {
-        return user.isActive() && user.isAccountNotBlocked() && user.isAccountNotExpired();
+        return user.isActive() && !user.isAccountBlocked() && !user.isAccountExpired();
     }
 
     private HashMap<String, Object> getClaims(User user) {
@@ -84,6 +82,15 @@ public class JwtUtils {
         claims.put(USER_EMAIL, user.getEmail());
         claims.put(USER_ROLE, user.getRole());
         return claims;
+    }
+
+    public String extractSubject(String token){
+        try{
+            return  extractClaims(token).getSubject();
+        } catch (Exception e) {
+            log.error(SecurityConstant.FAILED_TO_VALIDATE_JWT, e.getMessage());
+            return null;
+        }
     }
 
     private PrivateKey getPrivateKey() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
@@ -113,5 +120,11 @@ public class JwtUtils {
             keyBuilder.append(line);
         }
         return keyBuilder.toString();
+    }
+
+    private Claims extractClaims(String token) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+        return Jwts.parserBuilder()
+                .setSigningKey(getPublicKey())
+                .build().parseClaimsJws(token).getBody();
     }
 }

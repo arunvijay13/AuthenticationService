@@ -1,13 +1,15 @@
 package com.service.authservice.entity;
 
-import com.service.authservice.constant.UserRole;
+import com.service.authservice.model.Provider;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 
 
 @Getter
@@ -18,46 +20,66 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 @Builder
 @ToString
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
-    @Column(name = "username")
     private String username;
 
-    @NotEmpty
-    @Column(name = "password")
     private String password;
 
-    @NotEmpty
-    @Email
-    @Column(name = "email")
     private String email;
 
-    @NotEmpty @Pattern(regexp = "[0-9]{10}")
-    @Column(name = "phone_number")
-    private String phoneNumber;
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
 
-    @NotEmpty
-    @Column(name = "role")
-    private String role = UserRole.ROLE_ADMIN.toString();
+    private String role;
 
-    @Column(name = "active")
     private boolean isActive;
 
-    @Column(name = "expiry")
-    private boolean isAccountNotExpired;
+    private boolean isAccountExpired;
 
-    @Column(name = "block")
-    private boolean isAccountNotBlocked;
+    private boolean isAccountBlocked;
+
+    private boolean isCredentialExpired;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public boolean isPasswordExpired() {
-        return createdAt.isAfter(LocalDateTime.now());
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(role));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return !this.isAccountExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !this.isAccountBlocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return !this.isCredentialExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.isActive;
     }
 }
